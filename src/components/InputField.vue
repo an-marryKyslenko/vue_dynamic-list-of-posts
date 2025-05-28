@@ -1,7 +1,7 @@
 <script setup>
 const emit = defineEmits(['update:modelValue']);
 
-const {fieldName, placeholder, type, modelValue} = defineProps({
+const {fieldName, type, modelValue} = defineProps({
 	fieldName: String,
 	type: String,
 	modelValue: String
@@ -18,19 +18,21 @@ const {fieldName, placeholder, type, modelValue} = defineProps({
 				type="text"
 				:name="fieldName"
 				:id="`${type}-author-name-${fieldName}`"
-				:placeholder="`Enter ${type}`"
+				:placeholder="type === 'post' ? 'Enter title' : `Enter ${fieldName}`"
 				class="input"
 				:class="{'is-danger': false}"
 				:value="modelValue"
 				@input="emit('update:modelValue', $event.target.value)"
 			/>
 			<span class="icon is-small is-left">
-				<i class="fas fa-user"></i>
+				<i class="fa-solid fa-envelope" v-if="fieldName === 'email'"></i>
+				<i class="fas fa-user" v-else></i>
 			</span>
 
 			<span
 				class="icon is-small is-right"
-				:class="{'has-text-danger': false}"
+				:class="{'has-text-danger': false, 'is-hidden' : true}"
+
 				data-cy="ErrorIcon"
 			>
 				<i class="fas fa-exclamation-triangle"></i>

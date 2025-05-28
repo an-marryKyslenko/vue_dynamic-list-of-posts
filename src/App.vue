@@ -5,8 +5,8 @@
   import Header from "./components/Header.vue";
   import NoList from "./components/NoList.vue";
   import SideBar from "./components/SideBar.vue";
-  import PostPrevie from "./components/PostPrevie.vue";
-  import AddPost from "./components/AddPost .vue";
+  import PostPreview from "./components/PostPreview.vue";
+  import AddPost from "./components/AddPost.vue";
   import Loader from "./components/Loader.vue";
   import Table from "./components/Table.vue";
 
@@ -15,6 +15,9 @@
   const isCreatedPost = ref(false);
   const isOpenSideBar = ref(false);
   const isLoadingData = ref(false);
+  const isEditPost = ref(false);
+
+  provide('activePost', activePost);
 
   const loadPosts = async () => {
     isLoadingData.value = true
@@ -30,11 +33,10 @@
 
   onMounted(loadPosts)
 
-  watch(activePost, (val) =>{
-    if(val) {
+  watch(() => activePost.value, () =>{
       loadPosts()
-    }
-  })
+    
+  }, {deep: true})
 
   const createPost = async (formData) => {
     try {
@@ -49,24 +51,28 @@
   const openSideBar = () =>{
     isCreatedPost.value = true;
     isOpenSideBar.value = true;
+    isEditPost.value = false;
     activePost.value = null;
   }
-
-  const resetForm = () =>{
-    isOpenSideBar.value = false;
-    isCreatedPost.value = false;
+  
+  const startEditPost = () => {
+    isEditPost.value = true;
   }
 
-  // provide('a')
-
+  const reset = () => {
+    isOpenSideBar.value = false;
+    isCreatedPost.value = false;
+    isEditPost.value = false;
+    activePost.value = null;
+  }
 </script>
 
 <template>
-  <Header />
+  <Header></Header>
   <main class="section">
     <div class="container">
       <div class="columns">
-        <div :class="['column', isOpenSideBar ? 'is-half' : 'is-full']">
+        <div :class="['column', isOpenSideBar || activePost ? 'is-half' : 'is-full']">
           <div class="box is-success">
             <div class="block">
               <div class="block is-flex is-justify-content-space-between">
@@ -74,7 +80,7 @@
                 <button 
                   type="button" 
                   class="button is-link"
-                  :class="{'is-light': isCreatedPost}"
+                  :class="{'is-light': isCreatedPost && !activePost}"
                   @click="openSideBar"
                 >Add New Post</button>
               </div>
@@ -88,9 +94,9 @@
           </div>
         </div>
 
-        <SideBar :class="{'Sidebar--open': activePost || isCreatedPost}">
-          <PostPrevie v-if="activePost" :activePost="activePost"/>
-          <AddPost @submit="createPost" v-else/>
+        <SideBar :class="{'Sidebar--open': isOpenSideBar || activePost}" :isEditPost="isEditPost">
+          <PostPreview  @edit="startEditPost" v-if="activePost && !isEditPost"/>
+          <AddPost @submit="createPost" @reset="reset" v-else/>
         </SideBar>
       </div>
 

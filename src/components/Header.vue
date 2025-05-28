@@ -11,7 +11,7 @@
 			<div class="navbar-item">
 				<div class="buttons">
 				<div class="mr-5 mb-2">
-					<p>User: {user.name}</p>
+					<p>User: user.name</p>
 				</div>
 
 				<a class="button is-light"> Logout </a>

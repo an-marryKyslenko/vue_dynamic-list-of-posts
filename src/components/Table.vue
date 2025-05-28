@@ -1,10 +1,12 @@
 <script setup>
-	const {posts, modelValue} = defineProps({
-		posts: Object,
-		modelValue: Object
+import { inject } from 'vue';
+
+	const {posts} = defineProps({
+		posts: Array,
 	})
 
-const emit = defineEmits(['update:modelValue']);
+	const activePost = inject('activePost');
+
 </script>
 
 <template>
@@ -24,10 +26,10 @@ const emit = defineEmits(['update:modelValue']);
 				<button 
 					type="button" 
 					class="button is-link"
-					:class="{'is-light': modelValue?.id === post.id}"
-					@click="emit('update:modelValue', post)"
+					:class="{'is-light': activePost?.id === post.id}"
+					@click="activePost = post"
 				>
-					{{ modelValue?.id === post.id ? 'Close' : 'Open' }}
+					{{ activePost?.id === post.id ? 'Close' : 'Open' }}
 				</button>
 			</td>
 		</tr>
