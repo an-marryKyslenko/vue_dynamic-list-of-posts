@@ -1,10 +1,12 @@
 <script setup>
+
 const emit = defineEmits(['update:modelValue']);
 
-const {fieldName, type, modelValue} = defineProps({
+const {fieldName, type, modelValue, errorMessage} = defineProps({
 	fieldName: String,
 	type: String,
-	modelValue: String
+	modelValue: String,
+	errorMessage: String
 })
 </script>
 
@@ -20,7 +22,7 @@ const {fieldName, type, modelValue} = defineProps({
 				:id="`${type}-author-name-${fieldName}`"
 				:placeholder="type === 'post' ? 'Enter title' : `Enter ${fieldName}`"
 				class="input"
-				:class="{'is-danger': false}"
+				:class="{'is-danger': errorMessage}"
 				:value="modelValue"
 				@input="emit('update:modelValue', $event.target.value)"
 			/>
@@ -31,7 +33,7 @@ const {fieldName, type, modelValue} = defineProps({
 
 			<span
 				class="icon is-small is-right"
-				:class="{'has-text-danger': false, 'is-hidden' : true}"
+				:class="{'has-text-danger': errorMessage, 'is-hidden' : !errorMessage}"
 
 				data-cy="ErrorIcon"
 			>
@@ -39,6 +41,6 @@ const {fieldName, type, modelValue} = defineProps({
 			</span>
 		</div>
 
-		<p v-if="false" class="help is-danger" data-cy="ErrorMessage">error text</p>
+		<p v-if="errorMessage" class="help is-danger" data-cy="ErrorMessage">{{ errorMessage }}</p>
 	</div>
 </template>

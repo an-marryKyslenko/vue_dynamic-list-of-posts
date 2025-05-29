@@ -17,16 +17,6 @@ const deletePost = async () => {
 
 }
 
-const updatePost = async () => {
-	try {
-		const updatedPost = await postsApi.updatePost({}, activePost.value.id);
-
-		activePost.value = updatedPost;
-	} catch (error) {
-		console.error(error)
-	}
-}
-
 </script>
 
 <template>

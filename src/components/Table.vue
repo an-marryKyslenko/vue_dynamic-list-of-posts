@@ -19,7 +19,7 @@ import { inject } from 'vue';
 		</tr>
 		</thead>
 		<tbody>
-		<tr v-for="post of posts" key="post.id">
+		<tr v-for="post of posts" :key="post.id">
 			<td>{{ post.id }}</td>
 			<td>{{ post.title }}</td>
 			<td class="has-text-right is-vcentered">

@@ -1,10 +1,11 @@
 <script setup>
 	const emit = defineEmits(['update:modelValue']);
 
-const {fieldName, type, modelValue} = defineProps({
+const {fieldName, type, modelValue, errorMessage} = defineProps({
 	type: String,
 	fieldName: String,
-	modelValue: String
+	modelValue: String,
+	errorMessage: String
 })
 
 </script>
@@ -23,12 +24,12 @@ const {fieldName, type, modelValue} = defineProps({
 				:name="fieldName"
 				:placeholder="`${type} ${fieldName}`"
 				class="textarea"
-				:class="{'is-danger': false}"
+				:class="{'is-danger': errorMessage}"
 				:value="modelValue"
 				@input="emit('update:modelValue', $event.target.value)"
 			></textarea>
 		</div>
 
-		<p v-if="false" class="help is-danger" data-cy="ErrorMessage">error text</p>
+		<p v-if="errorMessage" class="help is-danger" data-cy="ErrorMessage">{{ errorMessage }}</p>
 	</div>
 </template>

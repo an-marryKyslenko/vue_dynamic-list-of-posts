@@ -65,6 +65,17 @@
     isEditPost.value = false;
     activePost.value = null;
   }
+
+  const updatePost = async (formData) => {
+	try {
+		const {data} = await postsApi.updatePost(formData, activePost.value.id);
+
+		activePost.value = data;
+    isEditPost.value = false;
+	} catch (error) {
+		console.error(error)
+	}
+}
 </script>
 
 <template>
@@ -86,17 +97,18 @@
               </div>
   
               <Loader v-if="isLoadingData"/>
-
-              <Table v-if="posts.length > 0" :posts="posts" v-model="activePost"/>
-  
-              <NoList v-else text="posts"/>
+              
+              <template v-else>
+                <Table v-if="posts.length > 0" :posts="posts" v-model="activePost"/>
+                <NoList v-else text="posts"/>
+              </template>
             </div>
           </div>
         </div>
 
         <SideBar :class="{'Sidebar--open': isOpenSideBar || activePost}" :isEditPost="isEditPost">
           <PostPreview  @edit="startEditPost" v-if="activePost && !isEditPost"/>
-          <AddPost @submit="createPost" @reset="reset" v-else/>
+          <AddPost @submit="createPost" @update="updatePost" @reset="reset" v-else/>
         </SideBar>
       </div>
 

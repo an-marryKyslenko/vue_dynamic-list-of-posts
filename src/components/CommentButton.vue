@@ -9,7 +9,7 @@
 <template>
 	<button 
 		type="button" 
-		className="button is-link"
+		class="button is-link"
 		@click="emit('update:modelValue',true)"
 	>
 		Write a comment

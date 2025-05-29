@@ -2,32 +2,52 @@
 import { inject, ref, watch } from 'vue';
 import InputField from './InputField.vue';
 import TextAreaField from './TextAreaField.vue';
+import { errorMessages } from 'vue/compiler-sfc';
 
 const activePost = inject('activePost');
 const title = ref(activePost.value?.title || '');
 const body = ref(activePost.value?.body || '');
 
-const emit = defineEmits(['submit', 'reset'])
+const titleErrorMessage = ref('');
+const bodyErrorMessage = ref('');
+
+const emit = defineEmits(['submit', 'reset', 'update'])
+
+const cleanFields = () => {
+	title.value = '';
+	body.value = '';
+}
 
 watch(() => activePost.value?.id, (val) => {
 	if(!val) {
-		title.value = '';
-		body.value = '';
+		cleanFields()
 	}
 })
 
-const submitData = () => {
-	emit('submit', {title: title.value, body: body.value});
-	
-	title.value = '';
-	body.value = '';
-}
 
+const submitData = () => {
+	if( title.value.length < 6) {
+		titleErrorMessage.value = 'Title must have more than 6 char'
+	}
+	if (body.value.length === 0) {
+		bodyErrorMessage.value = 'Body cannot be empty'
+	}
+
+	if(!titleErrorMessage && !bodyErrorMessage) {
+		if(activePost.value) {
+			emit('update', {title: title.value, body: body.value});
+		} else {
+			emit('submit', {title: title.value, body: body.value});
+		}
+		
+		cleanFields()
+	}
+}
 const resetForm = () => {
 	emit('reset');
-	title.value = '';
-	body.value = '';
+	cleanFields()
 }
+
 </script>
 
 <template>
@@ -35,8 +55,18 @@ const resetForm = () => {
 		<h2>{{ activePost ? 'Edit post' : 'Create new post'}}</h2>
 
 		<form @submit.prevent="submitData">
-			<InputField fieldName="title" type="post" v-model="title"/>
-			<TextAreaField fieldName="body" type="post" v-model="body"/>
+			<InputField 
+				fieldName="title" 
+				type="post" 
+				v-model="title" 
+				:errorMessage="titleErrorMessage"
+			/>
+			<TextAreaField 
+				fieldName="body" 
+				type="post" 
+				v-model="body" 
+				:errorMessage="bodyErrorMessage"
+			/>
 
 			<div class="field is-grouped">
 				<div class="control">
